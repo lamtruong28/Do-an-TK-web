@@ -22,7 +22,7 @@ export const cancelRememberUser = () => {
 }
 
 export const checkRememberUser = () => {
-    const result = JSON.parse(localStorage.getItem('info'));
+    const result = JSON.parse(localStorage.getItem('info')) || false;
     return result;
 }
 export const checkExistCart = ({ cartList, productId, userId }) => {
