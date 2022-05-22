@@ -1,0 +1,97 @@
+.form-product {
+    background-color: #fff;
+    width: 500px;
+    max-height: 95vh;
+    overflow: auto;
+}
+
+.form-product .wrap {
+    border: 1px solid #ccc;
+    padding: 16px;
+}
+
+.form-product textarea,
+.form-product input {
+    font-size: 1.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.form-product textarea {
+    min-height: 80px;
+    max-height: 160px;
+    max-width: 100%;
+    min-width: 100%;
+}
+
+.form-product span {
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #999;
+    background-color: #fff;
+    padding: 0 4px;
+    transition: all linear .2s;
+    pointer-events: none;
+}
+
+.form-product .desc {
+    top: 20px;
+}
+
+.form-product textarea:focus~span,
+.form-product textarea:not(:placeholder-shown)~span,
+.form-product input:not(:placeholder-shown)~span,
+.form-product input:focus~span {
+    top: 0;
+    font-size: 1.3rem;
+}
+
+.form-product .choice {
+    border: 1px solid #ccc;
+    color: #999;
+    font-size: 1.6rem;
+}
+
+.choice.active {
+    color: var(--text-color);
+}
+
+.form-product .choice option {
+    color: var(--text-color);
+}
+
+.form-product .control {
+    text-align: end;
+}
+
+
+.attachment-wrap {
+    margin-right: -12px;
+    padding-right: 5px;
+    padding-top: 8px;
+}
+
+.attachment-list {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.attachment-wrap-item {
+    display: flex;
+    gap: 2px;
+    flex-wrap: wrap;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.attachment-item {
+    width: 49.5555%;
+    flex-grow: 1;
+}
+
+.attachment-item img {
+    object-fit: cover;
+}

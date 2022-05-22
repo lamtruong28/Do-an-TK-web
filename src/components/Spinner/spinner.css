@@ -1,0 +1,25 @@
+.spinner {
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    vertical-align: text-bottom;
+    border: 0.35em solid #007bff;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: animate linear .8s infinite;
+}
+
+.spinner.spinner-sm {
+    width: 2rem;
+    height: 2rem;
+}
+
+@keyframes animate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}

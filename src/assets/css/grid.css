@@ -1,0 +1,149 @@
+.container {
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container-fluid {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: -6px;
+    margin-right: -6px;
+    justify-content: center;
+}
+
+.col {
+    width: 100%;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-bottom: 12px;
+}
+
+.col-4 {
+    width: 33.33333%;
+}
+
+.col.col-4 {
+    padding-left: 12px;
+    padding-right: 12px;
+}
+
+.col-6 {
+    width: 50%;
+}
+
+.col-5 {
+    width: 40%;
+}
+
+.col-7 {
+    width: 60%;
+}
+
+@media (max-width: 35.9375em) {
+    .col-4 {
+        width: 100%;
+    }
+
+    .col-6 {
+        width: 100vw;
+    }
+}
+
+/* screen width ≥576  */
+@media (min-width: 36em) {
+    .container {
+        width: 570px;
+    }
+
+    .col {
+        width: 50%;
+    }
+
+    .col-4 {
+        width: 100%;
+    }
+
+    .col-6 {
+        width: 100%;
+    }
+}
+
+/* screen width >= 768px  */
+@media (min-width: 48em) {
+    .container {
+        width: 750px;
+    }
+
+    .col {
+        width: 33.33333%;
+    }
+
+    .col-4 {
+        width: 100%;
+    }
+
+    .col-6 {
+        width: 100%;
+    }
+}
+
+/* screen width >= 992px  */
+@media (min-width: 62em) {
+    .container {
+        width: 990px;
+    }
+
+    .col {
+        width: 25%;
+    }
+
+    .col-4 {
+        width: 33.33333%;
+    }
+
+    .col-6 {
+        width: 50%;
+    }
+}
+
+/* screen width >= 1200px  */
+@media (min-width: 75em) {
+    .container {
+        width: 1170px;
+    }
+
+    .col {
+        width: 20%;
+    }
+
+    .col-4 {
+        width: 33.33333%;
+    }
+
+    .col-6 {
+        width: 50%;
+    }
+
+    .col-5 {
+        width: 40%;
+    }
+
+    .col-7 {
+        width: 60%;
+    }
+}
+
+/* screen width >=1400px  */
+@media (min-width: 87.5em) {
+    .container {
+        width: 1350px;
+    }
+}

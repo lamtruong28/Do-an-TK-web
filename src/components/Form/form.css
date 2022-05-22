@@ -1,0 +1,109 @@
+.form-wrapper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #2a2a72;
+    background-image: linear-gradient(315deg, #2a2a72 0%, #009ffd 74%);
+    z-index: 9999;
+}
+
+.form-wrap {
+    position: relative;
+    background-color: #fff;
+}
+
+.form__item {
+    position: relative;
+}
+
+.form__item .item-input {
+    font-size: 1.6rem;
+    padding: 8px;
+    outline: none;
+    border: 1px solid #ccc;
+}
+
+.item-input:focus {
+    border-color: #009ffd;
+}
+
+.item-label {
+    position: absolute;
+    font-size: 1.6rem;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #999;
+    background-color: #fff;
+    padding: 0 4px;
+    transition: all ease .2s;
+    user-select: none;
+    pointer-events: none;
+}
+
+.item-input:not(:placeholder-shown)~.item-label,
+.item-input:focus~.item-label {
+    top: 0;
+    font-size: 1.2rem;
+}
+
+.text-no-account {
+    font-size: 1.2rem;
+}
+
+.show-password {
+    position: absolute;
+    font-size: 1.4rem;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.gorgot-pass-wrap {
+    text-align: end;
+}
+
+.gorgot-pass {
+    margin-top: 12px;
+    font-size: 1.3rem;
+}
+
+.form-wrap .btn-back {
+    font-size: 2rem;
+    border-color: var(--text-color);
+}
+
+/* Responsive */
+
+@media (max-width: 35.9375em) {
+    .form-wrapper {
+        width: 100%;
+    }
+
+    .form-wrap {
+        padding: 16px 12px;
+    }
+}
+
+/* screen width ≥576  */
+@media (min-width: 36em) {
+    .form-wrapper {
+        width: 100%;
+        padding: 8px;
+    }
+}
+
+/* screen width >= 768px  */
+@media (min-width: 48em) {}
+
+/* screen width >= 992px  */
+@media (min-width: 62em) {}
+
+/* screen width >= 1200px  */
+@media (min-width: 75em) {}
+
+/* screen width >=1400px  */
+@media (min-width: 87.5em) {}

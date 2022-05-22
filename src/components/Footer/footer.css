@@ -1,0 +1,61 @@
+.footer {
+    background-color: #222;
+    color: #f1f1f1;
+    font-size: 1.4rem;
+}
+
+.footer__logo {
+    width: 200px;
+    height: 100%;
+}
+
+.footer p {
+    display: block;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+}
+
+.footer ul {
+    list-style: none;
+}
+
+.footer__social__item i {
+    font-size: 3.2rem;
+    cursor: pointer;
+}
+
+.footer__social__item:hover {
+    opacity: 0.9;
+}
+
+.i-facebook {
+    color: #1258f0;
+}
+
+.i-instagram {
+    color: #d5254f;
+}
+
+.i-youtube {
+    color: #ff0000;
+}
+
+.i-twitter {
+    color: #1DA1F2;
+}
+
+.i-tiktok {
+    color: #fff;
+}
+
+.footer__category {
+    font-size: 1.8rem;
+    color: #f0f8ff;
+    font-weight: 400;
+    margin-top: 12px;
+    margin-bottom: 4px;
+}
+
+.footer_coppyright p {
+    font-size: 1.3rem;
+}

@@ -1,0 +1,10 @@
+.btn-next,
+.btn-prev {
+    min-width: 80px;
+}
+
+.quantityPage {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: var(--text-body-color);
+}

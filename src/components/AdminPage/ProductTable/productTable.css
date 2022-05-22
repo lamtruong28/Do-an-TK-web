@@ -1,0 +1,59 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1.4rem;
+}
+
+thead {
+    background-color: #003bfb;
+    color: #fff;
+    height: 60px;
+}
+
+td,
+th {
+    border: 1px solid #ccc;
+    text-align: left;
+    padding: 8px;
+}
+
+tbody .stt {
+    width: 3%;
+}
+
+tbody .name {
+    width: 18%;
+}
+
+tbody .desc {
+    width: 30%;
+}
+
+tbody .type {
+    width: 7%;
+}
+
+tbody .price {
+    width: 7%;
+}
+
+tbody .promotion {
+    width: 7%;
+}
+
+tbody .action {
+    width: 10%;
+}
+
+
+tbody tr:nth-child(even) {
+    background-color: #f1f1f1;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #ddd;
+}
+
+tbody tr i {
+    font-size: 1.6rem;
+}

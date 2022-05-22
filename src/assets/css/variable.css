@@ -1,0 +1,26 @@
+:root {
+    --bg-primary: #f53d2d;
+    --white-color: #fff;
+    --black-color: #000;
+    --text-color: #333;
+    --primary-color: #ab1b1b;
+    --text-second-color: #ddd;
+    --boder-color: #dbdbdb;
+    --bg-secondary: #ddd;
+    --color-gray: #808080;
+    --body-color: #fff;
+    --text-body-color: #333;
+    --header-height: 120px;
+    --navbar-height: 34px;
+    --header-with-search-height: calc(var(--header-height) - var(--navbar-height));
+    --bg-card-color: #fff;
+    --bg-btn-search: #fff;
+}
+
+[data-theme='dark'] {
+    --bg-body-color: #444;
+    --text-body-color: #f1f1f1;
+    --bg-card-color: #f1f1f1;
+    --white-color: #333;
+    --text-color: #f1f1f1;
+}
