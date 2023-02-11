@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
-import { addToCart } from "../redux/cartSlice";
-import { editProduct, fetchProducts } from "../redux/productSlice";
-
+import { api } from "../API";
+import { addToCart, fetchCarts } from "../redux/cartSlice";
+import { UpdateProdSold, fetchProducts } from "../redux/productSlice";
 
 export const toBase64 = (file) => new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -30,34 +30,52 @@ export const checkExistCart = ({ cartList, productId, userId }) => {
     return result;
 }
 
-export const middlewareBuy = async ({ isLogin, product, navigate, dispatch, quantity }) => {
-    if (isLogin) {
-        const payload = { productId: product.productId, ...product }
-        payload['sold'] = product.sold + quantity;
-        await dispatch(editProduct(payload));
+export const middlewareBuy = async ({ userId, product, navigate, dispatch, quantity }) => {
+    if (userId) {
+        const payload = { prodCode: product.prodCode, sold: product.sold };
+        payload['sold'] = parseInt(product.sold) + parseInt(quantity);
+        await dispatch(UpdateProdSold(payload));
         await dispatch(fetchProducts());
-        toast.success("Cảm ơn bạn đã tin tưởng shop. Shop sẽ gởi hàng cho bạn trong vòng 24h!");
-    } else {
-        navigate('/sign-in')
-    }
+
+        const { prodCode } = product;
+        const date = new Date();
+        const time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+        const price = product.promotion != 0 ? product.promotion : product.price;
+        const payload2 = {
+            ID: userId,
+            prodCode,
+            price: price,
+            quantity: quantity,
+            total: parseInt(price) * parseInt(quantity),
+            createdAt: time
+        }
+        const res = await api.post(`/bill/addBill.php`, payload2);
+        if(res.data == 1) {
+            toast.success("Cảm ơn bạn đã tin tưởng shop. Shop sẽ gởi hàng cho bạn trong vòng 24h!");
+            return 1;
+        }
+        else {
+            toast.success("Có lỗi xảy ra! Vui lòng thử lại sau!");
+            return 0;
+        }
+    } else
+        navigate('/sign-in');
 }
 
-export const middlewareAddCart = ({ dispatch, cartList, product, quantity, userId }) => {
-    const check = checkExistCart({ cartList, productId: product.id, userId });
-    if (!check) {
-        const { id, name, description, price, sold, attachment } = product;
-        const payload = {
-            quantity: quantity || 1,
-            userId,
-            productId: id,
-            name,
-            description,
-            attachment,
-            price,
-            sold,
-        }
-        dispatch(addToCart(payload));
+export const middlewareAddCart = async ({ dispatch, product, quantity, userId }) => {
+    const { prodCode } = product;
+    const date = new Date();
+    const time = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+    const payload = {
+        ID: userId,
+        prodCode,
+        quantity: quantity || 1,
+        createdAt: time
+    }
+    const res = await dispatch(addToCart(payload));
+    if (res.payload) {
         toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+        dispatch(fetchCarts(userId));
     }
     else
         toast.error('Sản phẩm đã tồn tại trong giỏ hàng! Vui lòng kiểm tra lại giỏ hàng của bạn. Xin cảm ơn!');

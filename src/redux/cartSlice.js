@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
-const URL_DB = 'http://localhost:8080/carts';
+import { api } from "../API";
+
 const cartSlice = createSlice({
     name: 'carts',
     initialState: {
@@ -17,9 +17,6 @@ const cartSlice = createSlice({
             .addCase(fetchCarts.fulfilled, (state, action) => {
                 state.cartList = [...action.payload];
             })
-            .addCase(addToCart.fulfilled, (state, action) => {
-                state.cartList.push(action.payload);
-            })
             .addCase(destroyCart.fulfilled, (state, action) => {
                 state.cartList = state.cartList.filter(item => item.id !== action.payload);
             })
@@ -27,19 +24,18 @@ const cartSlice = createSlice({
 });
 
 export const fetchCarts = createAsyncThunk('carts/fetchCarts', async (userId) => {
-    const res = await axios.get(`${URL_DB}`);
-    const data = res.data.filter(item => item.userId === userId);
-    return data;
+    const res = await api.post(`/carts/getCarts.php`, { ID: userId });
+    return res.data;
 })
 
 export const addToCart = createAsyncThunk('carts/addToCart', async (payload) => {
-    const res = await axios.post(`${URL_DB}`, { ...payload });
+    const res = await api.post(`/carts/addCart.php`, payload);
     return res.data;
 });
 
 export const destroyCart = createAsyncThunk('carts/destroyCart', async (id) => {
-    await axios.delete(`${URL_DB}/${id}`);
-    return id;
+    const res = await api.post(`/carts/destroyCart.php`, { cartID: id });
+    return res.data;
 });
 
 export default cartSlice;

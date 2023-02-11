@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkPassword, updateUser } from '../../../redux/userSlice';
-import { checkRememberUser } from '../../../services';
+import { updatePass, updateUser } from '../../../redux/userSlice';
+import { checkRememberUser, toEnglish } from '../../../services';
 import { modalSlice } from '../../Modal/modalSlice';
 import { toast } from 'react-toastify';
 import '../form.css';
@@ -22,7 +22,7 @@ export default function () {
 
     const handleChangeInput = (e, payload) => {
         const coppy = { ...states };
-        coppy[payload] = e.target.value;
+        coppy[payload] = toEnglish(e.target.value);
         setStates(coppy);
     }
 
@@ -37,10 +37,9 @@ export default function () {
             toast.error("Xác nhận mật khẩu không chính xác! Vui lòng kiểm tra lại.");
             return;
         }
-        const check = checkPassword({ users, id: userId, password });
-        console.log(check);
-        if (check) {
-            await dispatch(updateUser({ id: userId, password: newPassword }));
+        const res = await dispatch(updatePass({ ID: userId, oldPass: password, password: newPassword }));
+        console.log(res.payload);
+        if (res.payload) {
             toast.success("Thay đổi mật khẩu thành công!");
             dispatch(modalSlice.actions.closeModal());
         } else

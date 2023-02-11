@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { userSelector } from '../../../redux/selectors';
 import { updateUser, fetchUsers } from '../../../redux/userSlice';
-import { checkInfoResetPass } from '../../../services';
+import { checkInfoResetPass, toEnglish } from '../../../services';
 import '../form.css';
 export default function () {
     const { users } = useSelector(userSelector);
@@ -24,7 +24,7 @@ export default function () {
     }, []);
     const handleChangeInput = (e, payload) => {
         const coppy = { ...states };
-        coppy[payload] = e.target.value;
+        coppy[payload] = toEnglish(e.target.value);
         setStates(coppy);
     };
 
@@ -40,9 +40,10 @@ export default function () {
             toast.error("Xác nhận mật khẩu không chính xác! Vui lòng kiểm tra lại.");
             return;
         }
-        const res = checkInfoResetPass({ users, email, userName });
-        if (res) {
-            await dispatch(updateUser({ id: res.id, password }));
+        //const res = checkInfoResetPass({ users, email, userName });
+        const res = await dispatch(updateUser({ email, userName, password }));
+        console.log({ res, PAYLOAD: res.payload });
+        if (res.payload) {
             toast.success("Thay đổi mật khẩu thành công!");
             navigate('/sign-in');
         } else

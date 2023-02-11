@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, handleLogin } from '../../../redux/userSlice';
+import { fetchUser, fetchUsers, handleLogin } from '../../../redux/userSlice';
 import '../form.css';
 import { toast } from 'react-toastify';
 import userSlice from '../../../redux/userSlice';
 import { userSelector } from '../../../redux/selectors';
+import { toEnglish } from '../../../services';
 
 export default function () {
     const [userName, setUserName] = useState('');
@@ -13,23 +14,22 @@ export default function () {
     const [showPass, setShowPass] = useState(false);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { users } = useSelector(userSelector);
+    const { users, currentUser } = useSelector(userSelector);
     useEffect(() => {
         dispatch(fetchUsers());
     }, []);
-
     const handleClickLogin = async (e) => {
         e.preventDefault();
         if (!userName && !password) return;
-        const user = handleLogin({ users, userName, password });
-        if (user) {
-            toast.success(`Welcome, ${user.userName}`);
+        const res = await dispatch(fetchUser({ userName, password }));
+        if (res.payload) {
+            toast.success(`Welcome, ${res.payload.userName}`);
             setUserName('');
             setPassword('');
-            if (user?.admin)
+            if (res.payload.admin)
                 navigate('/admin');
             else {
-                dispatch(userSlice.actions.setInfoUser(user));
+                dispatch(userSlice.actions.setInfoUser(res.payload));
                 navigate('/');
             }
         }
@@ -53,7 +53,7 @@ export default function () {
                                 required
                                 autoFocus
                                 value={userName}
-                                onChange={(e) => setUserName(e.target.value)}
+                                onChange={(e) => setUserName(toEnglish(e.target.value))}
                             />
                             <span className='item-label rounded'>Tên đăng nhập *</span>
                         </div>
@@ -65,7 +65,7 @@ export default function () {
                                 required
                                 placeholder=' '
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                onChange={(e) => setPassword(toEnglish(e.target.value))}
                             />
                             <span className='item-label rounded'>Mật khẩu *</span>
                             <span className='show-password' onClick={() => setShowPass(!showPass)}>

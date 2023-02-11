@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from 'axios';
-const URL_DB = 'http://localhost:8080/products';
+import { api } from "../API";
 
 const productSlice = createSlice({
     name: 'products',
@@ -22,7 +21,7 @@ const productSlice = createSlice({
                 state.error = false;
             })
             .addCase(fetchProducts.fulfilled, (state, action) => {
-                state.products = action.payload.filter(product => state.type === 'all' ? product : product.type === state.type);
+                state.products = action.payload.filter(product => state.type === 'all' ? product : product.prodTypeCode === state.type);
                 state.status = 'idle';
                 state.error = false;
             })
@@ -60,21 +59,39 @@ const productSlice = createSlice({
 });
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-    const res = await axios.get(`${URL_DB}`);
+    const res = await api.get(`/products/getAllProduct.php`);
     return res.data
 });
 export const addProduct = createAsyncThunk('products/addProduct', async (payload) => {
-    const res = await axios.post(`${URL_DB}`, payload);
-    return res.data
+    const res = await api.post(`/products/uploads.php`, payload, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    });
+    payload['image'] = res.data;
+    const response = await api.post(`/products/addProduct.php`, payload);
+    return response.data
 });
 
 export const destroyProduct = createAsyncThunk('products/destroyPost', async (id) => {
-    await axios.delete(`${URL_DB}/${id}`);
+    await api.post(`/products/destroyProduct.php`, { prodCode: id });
 });
 
 export const editProduct = createAsyncThunk('products/editProduct', async (payload) => {
-    const id = payload.productId || payload.id;
-    const res = await axios.put(`${URL_DB}/${id}`, payload);
+    if (payload.isChangeImage) {
+        const res = await api.post(`/products/uploads.php`, payload, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        });
+        payload['image'] = res.data;
+    }
+    const response = await api.post(`/products/updateProduct.php`, payload);
+    return response.data;
+});
+
+export const UpdateProdSold = createAsyncThunk('products/UpdateProdSold', async (payload) => {
+    const res = await api.post(`/products/updateSold.php`, payload);
     return res.data;
 });
 

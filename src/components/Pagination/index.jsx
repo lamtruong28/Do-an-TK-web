@@ -1,8 +1,8 @@
 import './pagination.css';
 import { useDispatch, useSelector } from "react-redux";
 import { pageSelector, productsSelector } from '../../redux/selectors';
-import paginationSlice, { SIZE_PAGE } from '../../redux/paginationSlice';
-import { useEffect, useState } from 'react';
+import paginationSlice from '../../redux/paginationSlice';
+import { useEffect } from 'react';
 export default function ({ total }) {
     const { first, last, page } = useSelector(pageSelector);
     const dispatch = useDispatch();

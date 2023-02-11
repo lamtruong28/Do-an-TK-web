@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { baseURL } from '../../../API';
 import { addProduct, editProduct, fetchProducts } from '../../../redux/productSlice';
 import { formSelector } from '../../../redux/selectors';
-import { toBase64 } from '../../../services';
 import { modalSlice } from '../../Modal/modalSlice';
 import './formProduct.css';
 
@@ -10,43 +11,53 @@ export default function () {
     const dispatch = useDispatch();
     const { typeForm, dataPayload } = useSelector(formSelector);
     const [states, setStates] = useState({
-        name: '',
+        prodName: '',
         description: '',
         price: '',
         promotion: '',
-        attachment: '',
-        type: '',
+        image: '',
+        prodTypeCode: '',
     })
-    const { name, description, price, promotion, attachment, type } = states;
-
+    const { prodName, description, price, promotion, image, prodTypeCode } = states;
+    const [selectImage, setSelectImage] = useState(false);
+    const [imagePrev, setImagePrev] = useState();
     useEffect(() => {
         if (typeForm === 'edit')
             setStates({
-                name: dataPayload.name,
+                prodName: dataPayload.prodName,
                 description: dataPayload.description,
                 price: dataPayload.price,
-                attachment: dataPayload.attachment,
-                type: dataPayload.type,
+                promotion: dataPayload.promotion,
+                image: dataPayload.image,
+                prodTypeCode: dataPayload.prodTypeCode,
             });
     }, []);
 
+    useEffect(() => {
+        //Cleanup:
+        return () => {
+            URL.revokeObjectURL(imagePrev?.prevImage); //xóa bỏ ảnh tạm khỏi bộ nhớ tránh rò rỉ bộ nhớ
+        }
+    }, [imagePrev]);
+
     const handleChooseImage = async (e) => {
+        setSelectImage(true);
         const file = e.target.files[0];
-        const base64 = await toBase64(file);
+        file.prevImage = URL.createObjectURL(file);
+        setImagePrev(file);
         setStates({
             ...states,
-            attachment: base64,
+            image: file
         })
     }
-
     const resetStates = () => {
         setStates({
-            name: '',
+            prodName: '',
             description: '',
             price: '',
             promotion: '',
-            attachment: '',
-            type: '',
+            image: '',
+            prodTypeCode: '',
         });
     }
     const onchangeInput = (e, payload) => {
@@ -59,19 +70,39 @@ export default function () {
         resetStates();
     }
     const handleClickBtn = async () => {
+        if (!prodName) {
+            toast.warning("Vui lòng nhập tên sản phẩm!");
+            return;
+        }
+        if (!prodTypeCode) {
+            toast.warning("Vui lòng chọn loại sản phẩm!");
+            return;
+        }
+        if (!price) {
+            toast.warning("Vui lòng nhập giá sản phẩm!");
+            return;
+        }
+        if (!image) {
+            toast.warning("Vui lòng chọn hình sản phẩm!");
+            return;
+        }
         dispatch(modalSlice.actions.closeModal());
+        if (selectImage) {
+            const formData = new FormData();
+            formData.append("image", image, image.name);
+        }
         if (typeForm === 'addNew') {
             const payload = { sold: 0, ...states };
-            dispatch(addProduct(payload));
+            await dispatch(addProduct(payload));
         }
         else {
-            const payload = { id: dataPayload.id, ...states };
+            const payload = { prodCode: dataPayload.prodCode, isChangeImage: selectImage, imageOld: dataPayload.image, ...states };
             await dispatch(editProduct(payload));
-            dispatch(fetchProducts());
         }
+        setSelectImage(false);
+        await dispatch(fetchProducts());
         resetStates();
     }
-
     return (
         <div className="form-product p-32 rounded" onClick={e => e.stopPropagation()}>
             <h1 className='text-center mb-16'>
@@ -86,8 +117,8 @@ export default function () {
                         className='w-100 p-8'
                         type="text"
                         placeholder=" "
-                        value={name}
-                        onChange={(e) => onchangeInput(e, 'name')}
+                        value={prodName}
+                        onChange={(e) => onchangeInput(e, 'prodName')}
                     />
                     <span>Tên sản phẩm *</span>
                 </div>
@@ -101,7 +132,7 @@ export default function () {
                     <span className='desc'>Mô tả sản phẩm</span>
                 </div>
                 <div className="position-relative mt-16">
-                    <select onChange={(e) => onchangeInput(e, 'type')} value={type} className={type !== '' ? 'w-100 p-8 choice active' : 'w-100 p-8 choice'}>
+                    <select onChange={(e) => onchangeInput(e, 'prodTypeCode')} value={prodTypeCode} className={prodTypeCode !== '' ? 'w-100 p-8 choice active' : 'w-100 p-8 choice'}>
                         <option hidden value="">----------Chọn----------</option>
                         <option className='p-8' value="male">Giày nam</option>
                         <option className='p-8' value="female">Giày Nữ</option>
@@ -130,13 +161,27 @@ export default function () {
                     <span>Giá khuyễn mãi (không bắt buộc)</span>
                 </div>
                 {
-                    attachment &&
+                    image && !selectImage &&
                     <div className="attachment-wrap mt-16 mb-2">
                         <div className="attachment-list">
                             <div className="attachment-wrap-item">
                                 {
                                     <div className="attachment-item">
-                                        <img src={attachment} width='100%' height='100%' alt='' />
+                                        <img src={baseURL + '/products/' + image} width='100%' height='100%' alt='' />
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                {
+                    imagePrev &&
+                    <div className="attachment-wrap mt-16 mb-2">
+                        <div className="attachment-list">
+                            <div className="attachment-wrap-item">
+                                {
+                                    <div className="attachment-item">
+                                        <img src={imagePrev.prevImage} width='100%' height='100%' alt='' />
                                     </div>
                                 }
                             </div>
@@ -144,7 +189,7 @@ export default function () {
                     </div>
                 }
                 <div className="mt-16">
-                    <input onChange={handleChooseImage} type="file" id='open-directory' hidden />
+                    <input onChange={handleChooseImage} type="file" accept='image/*' id='open-directory' hidden />
                     <label htmlFor='open-directory' className="btn btn-primary">{typeForm === 'addNew' ? 'Chọn hình' : 'Thay đổi hình'}</label>
                 </div>
             </div>

@@ -6,7 +6,6 @@ import { productsSelector } from "../../redux/selectors";
 export default function () {
     const dispatch = useDispatch();
     const { type } = useSelector(productsSelector);
-
     const styles = {
         fontSize: '1.6rem',
         cursor: 'pointer',

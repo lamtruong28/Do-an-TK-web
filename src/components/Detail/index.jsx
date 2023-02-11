@@ -4,10 +4,11 @@ import { cartSelector } from '../../redux/selectors';
 import { useNavigate } from 'react-router-dom';
 import './detail.css';
 import { checkRememberUser, middlewareAddCart, middlewareBuy } from '../../services';
+import { baseURL } from '../../API';
 
 
 export default function ({ product, setShow }) {
-    const { isLogin, userId } = checkRememberUser();
+    const { userId } = checkRememberUser();
     const [quantity, setQuantity] = useState(1);
     const { cartList } = useSelector(cartSelector);
     const dispatch = useDispatch();
@@ -22,13 +23,16 @@ export default function ({ product, setShow }) {
     }
 
     const handleClickBuy = () => {
-        middlewareBuy({ isLogin, product, navigate, dispatch, quantity });
+        middlewareBuy({ userId, product, navigate, dispatch, quantity });
         setShow(false);
     }
 
     const handleAddToCart = () => {
-        middlewareAddCart({ dispatch, cartList, product, quantity, userId });
-        setShow(false);
+        if (userId) {
+            middlewareAddCart({ dispatch, cartList, product, quantity, userId });
+            setShow(false);
+        } else
+            navigate('/sign-in');
     }
 
     return (
@@ -39,14 +43,14 @@ export default function ({ product, setShow }) {
                 </div>
                 <div className='col col-6 detail-product__item'>
                     <div className="detail-product__img"
-                        style={{ background: `url(${product?.attachment}) center center / cover no-repeat` }}
+                        style={{ background: `url("${baseURL}/products/${product?.image}") center center / contain no-repeat` }}
                     ></div>
                 </div>
                 <div className="col col-6  detail-product__item">
                     <div className='nav-sup'></div>
                     <div className='ps-16'>
                         <div className='pt-16'>
-                            <h2 className='name text-center'>{product?.name}</h2>
+                            <h2 className='name text-center'>{product?.prodName}</h2>
                             <p className='mt-16 text-center'>{product?.description}</p>
                         </div>
                         <div className='d-flex justify-content-around mt-16 mb-8'>
@@ -61,9 +65,9 @@ export default function ({ product, setShow }) {
                             </div>
                         </div>
                         <div className='price-wrap d-flex-center  mt-16'>
-                            <span className={product?.promotion ? 'price disable' : 'price'}>{product?.price}<sup>đ</sup></span>
+                            <span className={product?.promotion != 0 ? 'price disable' : 'price'}>{product?.price}<sup>đ</sup></span>
                             {
-                                product?.promotion && <span className='promotion ms-32'>{product?.promotion}<sup>đ</sup></span>
+                                product?.promotion != 0 && <span className='promotion ms-32'>{product?.promotion}<sup>đ</sup></span>
                             }
 
                         </div>

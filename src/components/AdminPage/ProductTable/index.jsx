@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { baseURL } from '../../../API';
 import formSlice from '../../../redux/formSlice';
 import { fetchProducts, destroyProduct } from '../../../redux/productSlice';
 import { productsSelector } from '../../../redux/selectors';
@@ -40,39 +41,38 @@ export default function () {
                             <thead>
                                 <tr>
                                     <th className='text-center stt'>STT</th>
-                                    <th className='text-center name'>Name</th>
-                                    <th className='text-center desc'>Description</th>
+                                    <th className='text-center name'>Tên sản phẩm</th>
+                                    <th className='text-center desc'>Mô tả</th>
                                     <th className='text-center desc'>Danh mục</th>
-                                    <th className='text-center price'>Price</th>
-                                    <th className='text-center promotion'>Promotion</th>
-                                    <th className='text-center img'>Image</th>
-                                    <th className='text-center action'>Action</th>
+                                    <th className='text-center price'>Giá</th>
+                                    <th className='text-center promotion'>Giá khuyến mãi</th>
+                                    <th className='text-center img'>Hình ảnh</th>
+                                    <th className='text-center action'>Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
                                     products?.length > 0 && products.map((product, index) => (
-                                        <tr key={product?.id}>
+                                        <tr key={product?.prodCode}>
                                             <td className='stt text-center'>{index + 1}</td>
-                                            <td className='name'>{product?.name}</td>
+                                            <td className='name'>{product?.prodName}</td>
                                             <td className='desc'>{product?.description}</td>
                                             <td className='type'>
                                                 {
-                                                    product?.type === 'male' && 'Giày nam' ||
-                                                    product?.type === 'female' && 'Giày nữ' ||
-                                                    product?.type === 'bag' && 'Balo - Túi sách' ||
-                                                    product?.type === 'accessory' && "Phụ kiện" || ''
+                                                    product?.prodTypeCode === 'male' && 'Giày nam' ||
+                                                    product?.prodTypeCode === 'female' && 'Giày nữ' ||
+                                                    product?.prodTypeCode === 'bag' && 'Balo - Túi sách' ||
+                                                    product?.prodTypeCode === 'accessory' && "Phụ kiện" || ''
                                                 }
                                             </td>
                                             <td className='price text-center'>{product?.price}</td>
                                             <td className='promotion text-center'>{product?.promotion}</td>
                                             <td className='img'>
                                                 <div style={{
-                                                    background: `url(${product?.attachment}) center / cover no-repeat`,
+                                                    background: `url("${baseURL}/products/${product?.image}") center / cover no-repeat`,
                                                     width: 100,
                                                     height: 100,
-                                                    margin: '0 auto',
-
+                                                    margin: '0 auto'
                                                 }}></div>
                                             </td>
                                             <td className='text-center action'>
@@ -84,7 +84,7 @@ export default function () {
                                                 </button>
                                                 <button
                                                     className='btn btn-sm btn-outline-danger'
-                                                    onClick={() => handleRomveProduct(product.id)}
+                                                    onClick={() => handleRomveProduct(product.prodCode)}
                                                 >
                                                     <i className="fa-solid fa-trash-can"></i>
                                                 </button>

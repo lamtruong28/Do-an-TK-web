@@ -2,18 +2,27 @@ import './cart.css';
 import noCart from '../../assets/images/no-cart.png';
 import { useDispatch, useSelector } from 'react-redux';
 import { cartSelector } from '../../redux/selectors';
-import { destroyCart } from '../../redux/cartSlice';
 import { checkRememberUser, middlewareBuy } from '../../services';
 import { useNavigate } from 'react-router-dom';
+import { destroyCart, fetchCarts } from '../../redux/cartSlice';
+import { baseURL } from '../../API';
 export default function () {
     const { cartList } = useSelector(cartSelector);
-    const { isLogin } = checkRememberUser();
+    const { userId } = checkRememberUser();
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const handleClickBuy = async (product) => {
-        await middlewareBuy({ isLogin, product, navigate, dispatch, quantity: product.quantity });
-        await dispatch(destroyCart(product.id));
+        const rs = await middlewareBuy({ userId, product, navigate, dispatch, quantity: product.quantity });
+        if(rs == 1) {
+            await dispatch(destroyCart(product.cartID));
+            await dispatch(fetchCarts(userId));
+        }
+    }
+
+    const handleDestroyCart = async (cartID) => {
+        await dispatch(destroyCart(cartID));
+        await dispatch(fetchCarts(userId));
     }
 
     return (
@@ -31,13 +40,13 @@ export default function () {
                             <ul className="header__cart-list-item">
                                 {
                                     cartList?.map(item => (
-                                        <li className="header__cart-item" key={item.id} title={item.description}>
-                                            <img className="header__cart-img" src={item?.attachment} alt="img SP" />
+                                        <li className="header__cart-item" key={item.prodCode} title={item.description}>
+                                            <img className="header__cart-img" src={baseURL + "/products/" + item?.image} alt="img SP" />
                                             <div className="header__cart-item-info">
                                                 <div className="header__cart-item-head">
-                                                    <h5 className="header__cart-item-name">{item?.name}</h5>
+                                                    <h5 className="header__cart-item-name">{item?.prodName}</h5>
                                                     <div className="header__cart-item-price-wrap">
-                                                        <span className="header__cart-item-price">{item?.promotion || item.price}</span>
+                                                        <span className="header__cart-item-price">{item?.promotion != 0 ? item?.promotion : item.price}</span>
                                                         <span className="header__cart-item-multiply">x</span>
                                                         <span className="header__cart-item-quantity">{item?.quantity}</span>
                                                     </div>
@@ -50,7 +59,7 @@ export default function () {
                                                     >Mua</span>
                                                     <span
                                                         className="header__cart-item-remove ms-8"
-                                                        onClick={() => dispatch(destroyCart(item.id))}
+                                                        onClick={() => handleDestroyCart(item.cartID)}
                                                     >Xóa</span>
                                                 </div>
                                             </div>

@@ -32,7 +32,7 @@ export default function () {
                         {
                             products.length > 0 && products?.map((product, index) => {
                                 if (index >= beginPoint && index < endPoint)
-                                    return (< Product key={product?.id} product={product} />)
+                                    return (< Product key={product?.prodCode} product={product} />)
                             })
                         }
                     </div>

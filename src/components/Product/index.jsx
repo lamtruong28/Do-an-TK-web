@@ -1,39 +1,43 @@
 import Detail from '../Detail';
 import './card.css';
 import Modal from '../Modal/SpinnerModal'
-import { useDispatch, useSelector } from 'react-redux';
-import { cartSelector, userSelector } from '../../redux/selectors';
+import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { checkRememberUser, middlewareAddCart } from '../../services';
+import { baseURL } from '../../API';
+import { useNavigate } from 'react-router-dom';
 
 export default function ({ product }) {
     const { userId } = checkRememberUser();
-    const { cartList } = useSelector(cartSelector);
     const [show, setShow] = useState(false);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleAddToCart = (e) => {
         e.stopPropagation();
-        middlewareAddCart({ dispatch, cartList, product, userId });
+        if (userId)
+            middlewareAddCart({ dispatch, product, userId });
+        else
+            navigate('/sign-in');
     }
 
     return (
         <>
             <div className='col' onClick={() => setShow(!show)}>
                 <div className='card rounded'>
-                    <div className='card-header' title={product?.name}>
-                        <img src={product?.attachment} alt='item' className='image rounded' />
+                    <div className='card-header' title={product?.prodName}>
+                        <img src={baseURL + "/products/" + product?.image} alt='item' className='image rounded' />
                     </div>
                     <div className='card-body'>
                         <div className='ps-4 pe-4'>
-                            <p className='name' title={product?.name}>{product?.name}</p>
+                            <p className='name' title={product?.prodName}>{product?.prodName}</p>
                             <span className='desc mt-4'>{product?.description}</span>
                         </div>
                         <div className='price-wrap mt-8 d-flex-center-y justify-content-between ps-4 pe-4'>
-                            <span className={product?.promotion ? 'price disable' : 'price'}>
+                            <span className={product?.promotion != 0 ? 'price disable' : 'price'}>
                                 {product?.price}<sup>đ</sup>
                             </span>
                             {
-                                product?.promotion &&
+                                product?.promotion != 0 &&
                                 <span className='promotion'>
                                     {product.promotion}<sup>đ</sup>
                                 </span>

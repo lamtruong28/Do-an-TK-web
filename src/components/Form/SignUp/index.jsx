@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import '../form.css';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
-import { addNewUser, checkEistsUser } from '../../../redux/userSlice';
+import { addNewUser } from '../../../redux/userSlice';
 import { toEnglish } from '../../../services';
 import { userSelector } from '../../../redux/selectors';
 
@@ -37,13 +37,13 @@ export default function () {
             toast.error("Xác nhận mật khẩu không chính xác! Vui lòng kiểm tra lại.");
             return;
         }
-        if (checkEistsUser({ users, userName })) {
-            toast.error("Người dùng đã tồn tại trên hệ thống! Vui lòng chọn tên khác.");
-        } else {
-            dispatch(addNewUser({ email, userName, password }));
+
+        const res = await dispatch(addNewUser({ email, userName, password }));
+        if (res.payload) {
             toast.success("Đăng ký tài khoản thành công! Mời đăng nhập.");
             navigate('/sign-in');
-        }
+        } else toast.error("Tài khoản đã tồn tại trên hệ thống.");
+
     }
 
     return (

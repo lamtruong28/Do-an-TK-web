@@ -163,6 +163,7 @@
     -webkit-box-orient: vertical;
     display: -webkit-box;
     overflow: hidden;
+    flex: 1;
 }
 
 .header__cart-item-buy,

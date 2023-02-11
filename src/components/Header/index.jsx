@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { cartSelector, modalSelector, userSelector } from '../../redux/selectors';
+import { cartSelector, modalSelector } from '../../redux/selectors';
 import { Link } from 'react-router-dom';
 import './header.css';
 import logo from './img/main_logo.png';
@@ -20,9 +20,10 @@ export default function () {
     const { cartList } = useSelector(cartSelector);
     const [quantity, setQuantity] = useState(0);
     const isShow = useSelector(modalSelector);
+
     useEffect(() => {
         setThemeApp(theme);
-        dispatch(fetchCarts(userId));
+        userId && dispatch(fetchCarts(userId));
         document.documentElement.setAttribute('data-theme', theme);
     }, []);
     useEffect(() => {
